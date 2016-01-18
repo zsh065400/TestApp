@@ -4,6 +4,7 @@
 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="org.testapp.zsh.PROVIDER"/>
 
 	<application
 		android:name=".aty.MyApplication"
@@ -47,19 +48,38 @@
 			</intent-filter>
 		</activity>
 
+		<!-- permisson 可用于验证权限 -->
 		<service
 			android:name=".service.BookManagerService"
 			android:enabled="true"
 			android:exported="true"
+			android:permission="testapp"
 			android:process=":remote">
 		</service>
 
 		<activity android:name=".aty.BookManagerActivity">
-			<!--<intent-filter>-->
-			<!--<action android:name="android.intent.action.MAIN"/>-->
 
-			<!--<category android:name="android.intent.category.LAUNCHER"/>-->
-			<!--</intent-filter>-->
+			<!-- <intent-filter> -->
+			<!-- <action android:name="android.intent.action.MAIN"/> -->
+
+
+			<!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+			<!-- </intent-filter> -->
+		</activity>
+
+		<provider
+			android:name=".proider.BookProvider"
+			android:authorities="org.testapp.zsh.provider"
+			android:permission="org.testapp.zsh.PROVIDER"
+			android:process=":provider">
+		</provider>
+
+		<activity android:name=".aty.ProviderActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
 		</activity>
 	</application>
 

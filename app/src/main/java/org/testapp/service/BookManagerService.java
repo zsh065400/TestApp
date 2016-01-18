@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -31,7 +32,17 @@ public class BookManagerService extends Service {
 
 
 	private Binder mBinder = new IBookManager.Stub() {
+		@Override
+		public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+			//可用于验证权限，有权才能调用方法
+			checkCallingOrSelfPermission("");
+			getCallingPid();
+			getCallingUid();
+			//验证包名
+			getPackageManager().getPackagesForUid(getCallingUid());
 
+			return super.onTransact(code, data, reply, flags);
+		}
 
 		@Override
 		public List<Book> getBookList() throws RemoteException {
