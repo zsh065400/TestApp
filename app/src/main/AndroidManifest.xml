@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="org.testapp"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+	<application
+		android:name=".aty.MyApplication"
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:supportsRtl="true"
+		android:theme="@style/AppTheme">
+		<activity android:name=".aty.MainActivity">
+		</activity>
+		<activity
+			android:name=".aty.SecondActivity"
+			android:process=":test">
+			<intent-filter>
+				<action android:name="org.testapp.t1"/>
+				<action android:name="org.testapp.t2"/>
+
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="org.testapp.category1"/>
+				<category android:name="org.testapp.category2"/>
+			</intent-filter>
+		</activity>
+
+		<service
+			android:name=".service.MyService"
+			android:enabled="true"
+			android:exported="true">
+		</service>
+		<service
+			android:name=".service.MessengerService"
+			android:enabled="true"
+			android:exported="true"
+			android:process=":remote">
+		</service>
+
+		<activity android:name=".aty.MessengerActivity">
+
+		</activity>
+
+		<service
+			android:name=".service.BookManagerService"
+			android:enabled="true"
+			android:exported="true"
+			android:process=":remote">
+		</service>
+
+		<activity android:name=".aty.BookManagerActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+	</application>
+
+</manifest>
