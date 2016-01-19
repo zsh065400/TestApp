@@ -21,6 +21,10 @@ public class User implements Serializable {
 
 	public Book book;
 
+	public User(){
+
+	}
+
 	public User(int userId, String userName, boolean isMale) {
 		this.userId = userId;
 		this.userName = userName;

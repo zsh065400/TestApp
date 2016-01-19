@@ -16,6 +16,10 @@ public class Book implements Parcelable {
 	public int bookId;
 	public String bookName;
 
+	public Book(){
+
+	}
+
 	public Book(int bookId, String bookName) {
 		this.bookId = bookId;
 		this.bookName = bookName;
@@ -48,4 +52,12 @@ public class Book implements Parcelable {
 		}
 
 	};
+
+	@Override
+	public String toString() {
+		return "Book{" +
+				"bookId=" + bookId +
+				", bookName='" + bookName + '\'' +
+				'}';
+	}
 }
