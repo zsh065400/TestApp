@@ -184,6 +184,7 @@ public class BookProvider extends ContentProvider {
 
 				break;
 		}
+		super.call(method, arg, extras);
 		return data;
 	}
 
