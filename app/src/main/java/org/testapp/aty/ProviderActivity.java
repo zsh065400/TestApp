@@ -1,7 +1,9 @@
 package org.testapp.aty;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,9 +28,16 @@ public class ProviderActivity extends AppCompatActivity {
 		ContentValues values = new ContentValues();
 		values.put("_id", 6);
 		values.put("name", "程序的设计艺术");
-		getContentResolver().insert(BookProvider.BOOK_CONTENT_URI, values);
+		Uri uri = getContentResolver().insert(BookProvider.BOOK_CONTENT_URI, values);
+		Log.d(TAG, "insert uri : " + uri);
 
-		Cursor bookCursor = getContentResolver().query(BookProvider.BOOK_CONTENT_URI, new String[]{"_id", "name"}, null, null, null);
+		ContentValues cv = new ContentValues();
+		cv.put("name", "Android开发艺术探索");
+		getContentResolver().update(BookProvider.BOOK_CONTENT_URI, cv, "name = ?", new String[]{"Android"});
+
+		getContentResolver().delete(BookProvider.USER_CONTENT_URI, "_id = ?", new String[]{"1"});
+
+		Cursor bookCursor = getContentResolver().query(ContentUris.withAppendedId(BookProvider.BOOK_CONTENT_URI, 3), new String[]{"_id", "name"}, null, null, null);
 		if (bookCursor != null) {
 			while (bookCursor.moveToNext()) {
 				Book book = new Book();
@@ -50,6 +59,7 @@ public class ProviderActivity extends AppCompatActivity {
 			}
 			userCursor.close();
 		}
+
 
 	}
 }

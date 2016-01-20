@@ -1,6 +1,7 @@
 package org.testapp.proider;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -30,13 +31,17 @@ public class BookProvider extends ContentProvider {
 	public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITIES + "/user");
 
 	public static final int BOOK_URI_CODE = 0;
+	public static final int BOOK_ONE_URI_CODE = 2;
 	public static final int USER_URI_CODE = 1;
+	public static final int USER_ONE_URI_CODE = 3;
 
 	private static final UriMatcher sURI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
 	static {
 		sURI_MATCHER.addURI(AUTHORITIES, "book", BOOK_URI_CODE);
 		sURI_MATCHER.addURI(AUTHORITIES, "user", USER_URI_CODE);
+		sURI_MATCHER.addURI(AUTHORITIES, "book/#", BOOK_ONE_URI_CODE);
+		sURI_MATCHER.addURI(AUTHORITIES, "user/#", USER_ONE_URI_CODE);
 	}
 
 	private Context mContext;
@@ -69,6 +74,18 @@ public class BookProvider extends ContentProvider {
 		if (table == null) {
 			throw new IllegalArgumentException("Unsupported URI : " + uri.toString());
 		}
+		switch (sURI_MATCHER.match(uri)) {
+			case BOOK_ONE_URI_CODE:
+			case USER_ONE_URI_CODE:
+				long id = ContentUris.parseId(uri);
+				selection = "_id = ?";
+				selectionArgs = new String[]{String.valueOf(id)};
+				break;
+			case BOOK_URI_CODE:
+			case USER_URI_CODE:
+
+				break;
+		}
 		Cursor cursor = mDb.query(table, projection, selection, selectionArgs, null, null, sortOrder, null);
 		return cursor;
 	}
@@ -84,6 +101,11 @@ public class BookProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		Log.d(TAG, "insert");
+		switch (sURI_MATCHER.match(uri)) {
+			case BOOK_ONE_URI_CODE:
+			case USER_ONE_URI_CODE:
+				throw new IllegalArgumentException("Unsupported URI : " + uri.toString());
+		}
 		String table = getTableName(uri);
 		if (table == null) {
 			throw new IllegalArgumentException("Unsupported URI : " + uri.toString());
@@ -92,9 +114,9 @@ public class BookProvider extends ContentProvider {
 		if (rowId > 0) {
 			mContext.getContentResolver().notifyChange(uri, null);
 			if (table.equals("book")) {
-				return Uri.parse(BOOK_CONTENT_URI + "/" + rowId);
-			} else {
-				return Uri.parse(USER_CONTENT_URI + "/" + rowId);
+				return ContentUris.withAppendedId(uri, rowId);
+			} else if (table.equals("user")) {
+				return ContentUris.withAppendedId(uri, rowId);
 			}
 		}
 		return null;
@@ -133,9 +155,11 @@ public class BookProvider extends ContentProvider {
 		String tableName = null;
 		switch (sURI_MATCHER.match(uri)) {
 			case BOOK_URI_CODE:
+			case BOOK_ONE_URI_CODE:
 				tableName = DbOpenHelper.BOOK_TABLE_NAME;
 				break;
 			case USER_URI_CODE:
+			case USER_ONE_URI_CODE:
 				tableName = DbOpenHelper.USER_TABLE_NAME;
 				break;
 			default:
@@ -150,6 +174,21 @@ public class BookProvider extends ContentProvider {
 	@Nullable
 	@Override
 	public Bundle call(String method, String arg, Bundle extras) {
-		return super.call(method, arg, extras);
+		Bundle data = new Bundle();
+		switch (arg) {
+			case "test":
+				String s = test(extras.getInt("a"));
+				data.putString("test", s);
+				break;
+			default:
+
+				break;
+		}
+		return data;
+	}
+
+	public String test(int a) {
+		a++;
+		return String.valueOf(a);
 	}
 }
