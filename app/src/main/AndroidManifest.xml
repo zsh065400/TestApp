@@ -79,7 +79,6 @@
 		</provider>
 
 		<activity android:name=".aty.ProviderActivity">
-
 		</activity>
 
 		<service
@@ -89,6 +88,16 @@
 		</service>
 
 		<activity android:name=".aty.TCPClientActivity">
+
+		</activity>
+
+		<service
+			android:name=".service.BinderPoolService"
+			android:enabled="true"
+			android:exported="true">
+		</service>
+
+		<activity android:name=".aty.BinderPoolActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 
