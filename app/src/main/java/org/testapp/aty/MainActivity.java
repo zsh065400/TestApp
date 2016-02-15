@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import practice.PracticeActivity;
+
 public class MainActivity extends AppCompatActivity {
 	private IBookManager mService;
 
@@ -65,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
 		findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setAction(SecondActivity.ACTION_1);
+				Intent intent = new Intent(MainActivity.this, PracticeActivity.class);
+//				intent.setAction(SecondActivity.ACTION_1);
 //				intent.setAction(SecondActivity.ACTION_2);
 //				intent.setAction(SecondActivity.ACTION_3);
 //				intent.addCategory(SecondActivity.CATEGORY_1);

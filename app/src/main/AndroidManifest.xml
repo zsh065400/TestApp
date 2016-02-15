@@ -16,6 +16,11 @@
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
 		<activity android:name=".aty.MainActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
 		</activity>
 		<activity
 			android:name=".aty.SecondActivity"
@@ -98,11 +103,10 @@
 		</service>
 
 		<activity android:name=".aty.BinderPoolActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
 
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
+		</activity>
+		<activity android:name="practice.PracticeActivity">
+
 		</activity>
 	</application>
 
