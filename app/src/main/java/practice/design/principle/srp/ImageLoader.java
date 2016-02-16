@@ -2,7 +2,6 @@ package practice.design.principle.srp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.LruCache;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -14,10 +13,10 @@ import java.util.concurrent.Executors;
 
 /**
  * @author：Administrator
- * @version:1.0
+ * @version:1.1
  */
 public class ImageLoader {
-	private LruCache<String, Bitmap> mLruCache;
+	private ImageCache mCache;
 	private ExecutorService mThreadPool =
 			Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	private ImageLoader mInstance;
@@ -35,23 +34,17 @@ public class ImageLoader {
 
 
 	private ImageLoader() {
-		initCache();
+		mCache = new ImageCache();
 	}
 
-	private void initCache() {
-		int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-		int cacheSize = maxMemory / 4;
-		mLruCache = new LruCache<String, Bitmap>(cacheSize) {
-			@Override
-			protected int sizeOf(String key, Bitmap value) {
-//				return value.getRowBytes() * value.getHeight() / 1024;
-//				value.getRowBytes() * value.getHeight() == value.getByteCount
-				return value.getByteCount() / 1024;
-			}
-		};
-	}
 
 	public void displayImage(final String url, final ImageView iv) {
+		Bitmap bitmap = mCache.get(url);
+		if (bitmap != null) {
+			iv.setImageBitmap(bitmap);
+			return;
+		}
+
 		iv.setTag(url);
 
 		mThreadPool.submit(new Runnable() {
@@ -66,17 +59,14 @@ public class ImageLoader {
 //					}
 //				}
 //              该方法最大程度的下载/缓存图片，最大程度利用线程资源
-				Bitmap bitmap = getBitmapFromCache(url);
+				Bitmap bitmap = downloadImage(url);
 				if (bitmap == null) {
-					bitmap = downloadImage(url);
-					if (bitmap == null) {
-						return;
-					}
+					return;
 				}
 				if (iv.getTag().equals(url)) {
 					iv.setImageBitmap(bitmap);
 				}
-				mLruCache.put(url, bitmap);
+				mCache.put(url, bitmap);
 			}
 		});
 	}
@@ -95,7 +85,4 @@ public class ImageLoader {
 		return bitmap;
 	}
 
-	private Bitmap getBitmapFromCache(String url) {
-		return mLruCache.get(url);
-	}
 }
