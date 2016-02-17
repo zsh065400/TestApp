@@ -1,5 +1,6 @@
-package practice.design.principle.srp;
+package practice.design.principle.design_principle;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
@@ -13,19 +14,25 @@ import java.util.concurrent.Executors;
 
 /**
  * @author：Administrator
- * @version:1.1
+ * @version:1.2
  */
 public class ImageLoader {
-	private ImageCache mCache;
+	private ImageCache mImageCache;
 	private ExecutorService mThreadPool =
 			Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	private ImageLoader mInstance;
+	private Context mContext;
 
-	public ImageLoader getInstance() {
+	public void setImageCache(ImageCache mImageCache) {
+		this.mImageCache = mImageCache;
+	}
+
+	public ImageLoader getInstance(Context context) {
 		if (mInstance == null) {
 			synchronized (ImageLoader.class) {
 				if (mInstance == null) {
 					mInstance = new ImageLoader();
+					this.mContext = context;
 				}
 			}
 		}
@@ -34,17 +41,20 @@ public class ImageLoader {
 
 
 	private ImageLoader() {
-		mCache = new ImageCache();
+		mImageCache = new DoubleCache(mContext);
 	}
 
 
 	public void displayImage(final String url, final ImageView iv) {
-		Bitmap bitmap = mCache.get(url);
+		Bitmap bitmap = mImageCache.get(url);
 		if (bitmap != null) {
 			iv.setImageBitmap(bitmap);
 			return;
 		}
+		submitLoadRequest(url, iv);
+	}
 
+	private void submitLoadRequest(final String url, final ImageView iv) {
 		iv.setTag(url);
 
 		mThreadPool.submit(new Runnable() {
@@ -66,7 +76,7 @@ public class ImageLoader {
 				if (iv.getTag().equals(url)) {
 					iv.setImageBitmap(bitmap);
 				}
-				mCache.put(url, bitmap);
+				mImageCache.put(url, bitmap);
 			}
 		});
 	}
