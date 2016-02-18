@@ -20,14 +20,10 @@ public class DoubleCache implements ImageCache {
 		}
 	}
 
-	// TODO: 2016/2/17 双缓存put和get优化 
 	@Override
 	public void put(String url, Bitmap target) {
-		Bitmap bitmap = get(url);
-		if (bitmap == null) {
-			mMemoryCache.put(url, target);
-			mDiskCache.put(url, target);
-		}
+		mMemoryCache.put(url, target);
+		mDiskCache.put(url, target);
 	}
 
 	@Override
