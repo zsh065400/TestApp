@@ -9,7 +9,8 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+
+import practice.util.CloseUtil;
 
 /**
  * @author：Administrator
@@ -47,13 +48,7 @@ public class DiskCache implements ImageCache {
 			e.printStackTrace();
 			Log.e(TAG, "bitmap cache error!");
 		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			CloseUtil.closeQuietly(fos);
 		}
 	}
 
