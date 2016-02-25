@@ -1,0 +1,20 @@
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	>
+
+	<org.testapp.view.Scroller
+		android:layout_width="70dp"
+		android:layout_height="70dp"
+		android:background="#ccc"
+		android:paddingBottom="40dp"
+		android:paddingLeft="20dp"
+		app:exampleColor="#33b5e5"
+		app:exampleDimension="24sp"
+		app:exampleDrawable="@android:drawable/ic_menu_add"
+		app:exampleString="Hello, Scroller"
+		/>
+
+</FrameLayout>

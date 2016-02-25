@@ -1,14 +1,13 @@
 package org.testapp.aty;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.widget.TextView;
 
 import org.testapp.R;
 import org.testapp.aidl.IBookManager;
@@ -20,8 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
-import practice.PracticeActivity;
 
 public class MainActivity extends AppCompatActivity {
 	private IBookManager mService;
@@ -57,30 +54,30 @@ public class MainActivity extends AppCompatActivity {
 		}
 	};
 	public static final String TAG = "MainActivity";
-
+	private TextView textView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		persistToFile();
-		findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, PracticeActivity.class);
-//				intent.setAction(SecondActivity.ACTION_1);
-//				intent.setAction(SecondActivity.ACTION_2);
-//				intent.setAction(SecondActivity.ACTION_3);
-//				intent.addCategory(SecondActivity.CATEGORY_1);
-//				intent.addCategory(SecondActivity.CATEGORY_2);
-//				intent.addCategory(SecondActivity.CATEGORY_2);
-//				intent.addCategory(SecondActivity.CATEGORY_3);
-				startActivity(intent);
-			}
-		});
+		setContentView(R.layout.sample_scroller);
+//		persistToFile();
+//
+//		findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent = new Intent(MainActivity.this, PracticeActivity.class);
+////				intent.setAction(SecondActivity.ACTION_1);
+////				intent.setAction(SecondActivity.ACTION_2);
+////				intent.setAction(SecondActivity.ACTION_3);
+////				intent.addCategory(SecondActivity.CATEGORY_1);
+////				intent.addCategory(SecondActivity.CATEGORY_2);
+////				intent.addCategory(SecondActivity.CATEGORY_2);
+////				intent.addCategory(SecondActivity.CATEGORY_3);
+//				startActivity(intent);
+//			}
+//		});
 
 	}
-
 
 	private void persistToFile() {
 		new Thread(new Runnable() {
