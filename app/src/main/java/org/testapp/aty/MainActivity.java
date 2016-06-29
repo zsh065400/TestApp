@@ -1,5 +1,13 @@
 package org.testapp.aty;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.IntEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +21,13 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
@@ -27,8 +42,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
-import practice.other.JsonPractice;
 
 public class MainActivity extends AppCompatActivity {
     private IBookManager mService;
@@ -117,8 +130,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-        JsonPractice.buildJson();
+//        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_main);
+
+
+        testAnim();
+
+
+//        JsonPractice.buildJson();
+
 //        tv = (TextView) findViewById(R.id.t);
 //        tv.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -147,6 +167,104 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void testAnim() {
+        Button btnAnim = (Button) findViewById(R.id.id_btn_anim);
+        final Animation animation =
+                AnimationUtils.loadAnimation(this, R.anim.animation_test);
+        btnAnim.startAnimation(animation);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+        final AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        alphaAnimation.setDuration(300);
+        btnAnim.startAnimation(alphaAnimation);
+
+        /*
+        * LayoutAnimation
+        * */
+
+        ListView lv = new ListView(this);
+        final Animation test = AnimationUtils.loadAnimation(this, R.anim.animation_test);
+        final LayoutAnimationController controller = new LayoutAnimationController(test);
+        controller.setDelay(0.5f);
+        controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        lv.setLayoutAnimation(controller);
+
+
+        /*
+        *
+        * */
+
+        final int start = 0;
+        final int end = 0;
+        final View view = new View(this);
+        final IntEvaluator evaluator = new IntEvaluator();
+        final ValueAnimator valueAnimator = ValueAnimator.ofInt(1, 100);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final Object value = animation.getAnimatedValue();
+                Log.d(TAG, "onAnimationUpdate: current progress----->" + value);
+                final float fraction = animation.getAnimatedFraction();
+                final int current = evaluator.evaluate(fraction, start, end);
+                view.getLayoutParams().width = current;
+                view.requestLayout();
+            }
+        });
+        valueAnimator.setDuration(5000).start();
+    }
+
+
+    private void propertyAnimtor() {
+        ObjectAnimator.ofFloat(null, "translationY", 2400f).start();
+
+        final ObjectAnimator colorAnim = ObjectAnimator.ofInt(null, "backgroundColor", 0xFFFF8080, 0xFF8080FF);
+        colorAnim.setDuration(3000);
+        colorAnim.setEvaluator(new ArgbEvaluator());
+        colorAnim.setRepeatCount(ValueAnimator.INFINITE);
+        colorAnim.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnim.start();
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(null, "rotationX", 0, 360),
+                ObjectAnimator.ofFloat(null, "rotationY", 0, 180),
+                ObjectAnimator.ofFloat(null, "rotation", 0, -90),
+                ObjectAnimator.ofFloat(null, "translationX", 0, 90),
+                ObjectAnimator.ofFloat(null, "translationY", 0, 90),
+                ObjectAnimator.ofFloat(null, "scaleX", 0, 1.5f),
+                ObjectAnimator.ofFloat(null, "scaleY", 0, 0.5f),
+                ObjectAnimator.ofFloat(null, "alphaX", 0, 0.25f, 1));
+        set.setDuration(5 * 1000).start();
+
+
+        final Animator animator = AnimatorInflater.loadAnimator(this, R.animator.property_animator);
+        animator.setTarget(null);
+        animator.start();
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+    }
 
     private void notfiyNormal() {
         Notification n = new Notification();
